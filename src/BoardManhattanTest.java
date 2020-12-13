@@ -3,7 +3,6 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 
 public class BoardManhattanTest {
-    private final int[][] orderedBoardOne = new int[][]{{1}};
     private final int[][] orderedBoardTwo = new int[][]{{1, 2}, {3, 0}};
     private final int[][] orderedBoardThree = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 0}};
     private final int[][] orderedBoardFifteen = new int[][]{
@@ -75,7 +74,7 @@ public class BoardManhattanTest {
     @Test
     public void testManhattan8() {
         Board board = new Board(new int[][]{{0, 3}, {2, 1}});
-        assertEquals(8, board.manhattan());
+        assertEquals(6, board.manhattan());
     }
 
     @Test

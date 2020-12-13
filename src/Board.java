@@ -58,10 +58,13 @@ public class Board {
             int rowLength = row.length;
 
             for (int j = 0; j < rowLength; j++) {
-                if (this.tiles[i][j] == (i * rowLength + j + 1) || this.tiles[i][j] == 0) {
+                int current = this.tiles[i][j];
+                if (current == (i * rowLength + j + 1) || current == 0) {
                     continue;
                 }
-                distance++;
+                int correctRow = (int) Math.ceil((double) current / tilesLength) - 1;
+                int correctColumn = current - correctRow * tilesLength - 1;
+                distance += Math.abs(i - correctRow) + Math.abs(j - correctColumn);
             }
         }
         return distance;
