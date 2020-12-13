@@ -39,7 +39,7 @@ public class Board {
             int rowLength = row.length;
 
             for (int j = 0; j < rowLength; j++) {
-                if (this.tiles[i][j] == (i * rowLength + j + 1) || (i == tilesLength - 1 && j == rowLength - 1)) {
+                if (this.tiles[i][j] == (i * rowLength + j + 1) || this.tiles[i][j] == 0) {
                     continue;
                 }
                 count++;
@@ -50,7 +50,21 @@ public class Board {
 
     // sum of Manhattan distances between tiles and goal
     public int manhattan() {
-        return -1;
+        int distance = 0;
+        int tilesLength = this.tiles.length;
+
+        for (int i = 0; i < tilesLength; i++) {
+            int[] row = this.tiles[i];
+            int rowLength = row.length;
+
+            for (int j = 0; j < rowLength; j++) {
+                if (this.tiles[i][j] == (i * rowLength + j + 1) || this.tiles[i][j] == 0) {
+                    continue;
+                }
+                distance++;
+            }
+        }
+        return distance;
     }
 
     // is this board the goal board?
