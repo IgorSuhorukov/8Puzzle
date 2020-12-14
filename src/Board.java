@@ -26,7 +26,7 @@ public class Board {
 
     // board dimension n
     public int dimension() {
-        return -1;
+        return this.tiles.length;
     }
 
     // number of tiles out of place
@@ -72,12 +72,12 @@ public class Board {
 
     // is this board the goal board?
     public boolean isGoal() {
-        return false;
+        return this.hamming() == 0;
     }
 
     // does this board equal y?
-    public boolean equals(Object y) {
-        return false;
+    public boolean equals(Board y) {
+        return this.dimension() == y.dimension() && this.toString().equals(y.toString());
     }
 
     // all neighboring boards
@@ -92,7 +92,15 @@ public class Board {
 
     // unit testing (not graded)
     public static void main(String[] args) {
+        Board board = new Board(new int[][]{{1, 2}, {3, 0}});
+        Board boardTwo = new Board(new int[][]{{1, 2}, {3, 0}});
 
+        System.out.println("should output text: " + board.toString());
+        System.out.println("hamming should be: " + board.hamming());
+        System.out.println("manhattan should be: " + board.manhattan());
+        System.out.println("dimension should be: " + board.dimension());
+
+        System.out.println("board are equal: " + board.equals(boardTwo));
     }
 
     private String generateStructureOfNItems(int n) {

@@ -1,6 +1,6 @@
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class BoardTest {
     private final int[][] orderedBoardOne = new int[][]{{1}};
@@ -63,5 +63,64 @@ public class BoardTest {
                 "211 212 213 214 215 216 217 218 219 220 221 222 223 224 0 \n";
         Board board = new Board(this.orderedBoardFifteen);
         assertEquals(expectedString, board.toString());
+    }
+
+    @Test
+    public void testDimension() {
+        Board board = new Board(this.orderedBoardTwo);
+        assertEquals(2, board.dimension());
+
+        board = new Board(this.orderedBoardThree);
+        assertEquals(3, board.dimension());
+
+        board = new Board(this.orderedBoardFifteen);
+        assertEquals(15, board.dimension());
+    }
+
+    @Test
+    public void testIsGoal() {
+        Board board = new Board(this.orderedBoardTwo);
+        assertTrue(board.isGoal());
+
+        board = new Board(this.orderedBoardThree);
+        assertTrue(board.isGoal());
+
+        board = new Board(this.orderedBoardFifteen);
+        assertTrue(board.isGoal());
+
+        board = new Board(new int[][] {{1, 2}, {0, 3}});
+        assertFalse(board.isGoal());
+
+        board = new Board(new int[][] {{0, 2}, {3, 1}});
+        assertFalse(board.isGoal());
+
+        board = new Board(new int[][] {{0, 3}, {1, 2}});
+        assertFalse(board.isGoal());
+
+        board = new Board(new int[][] {{0, 1}, {2, 3}});
+        assertFalse(board.isGoal());
+    }
+
+    @Test
+    public void testEquals() {
+        Board boardOne = new Board(this.orderedBoardTwo);
+        Board boardTwo = new Board(this.orderedBoardTwo);
+        assertTrue(boardOne.equals(boardTwo));
+
+        boardOne = new Board(new int[][] {{1,2},{3,0}});
+        boardTwo = new Board(new int[][] {{1,2},{3,0}});
+        assertTrue(boardOne.equals(boardTwo));
+
+        boardOne = new Board(new int[][] {{2,1},{0,3}});
+        boardTwo = new Board(new int[][] {{2,1},{0,3}});
+        assertTrue(boardOne.equals(boardTwo));
+
+        boardOne = new Board(new int[][] {{2,1},{0,3}});
+        boardTwo = new Board(new int[][] {{1,2},{3,0}});
+        assertFalse(boardOne.equals(boardTwo));
+
+        boardOne = new Board(new int[][] {{2,1},{0,3}});
+        boardTwo = new Board(new int[][] {{1,2},{3,0}});
+        assertFalse(boardOne.equals(boardTwo));
     }
 }
