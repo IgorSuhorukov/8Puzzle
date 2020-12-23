@@ -151,14 +151,14 @@ public class Board {
         if (this.isWithinRange(row - 1)) {
             sides.add(TOP);
         }
+        if (this.isWithinRange(column + 1)) {
+            sides.add(RIGHT);
+        }
         if (this.isWithinRange(row + 1)) {
             sides.add(BOTTOM);
         }
         if (this.isWithinRange(column - 1)) {
             sides.add(LEFT);
-        }
-        if (this.isWithinRange(column + 1)) {
-            sides.add(RIGHT);
         }
         return sides.toArray(new String[0]);
     }
