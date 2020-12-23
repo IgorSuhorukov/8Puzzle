@@ -1,5 +1,14 @@
+import java.util.ArrayList;
+import java.util.Iterator;
+
 public class Board {
+    private static final String LEFT = "LEFT";
+    private static final String RIGHT = "RIGHT";
+    private static final String TOP = "TOP";
+    private static final String BOTTOM = "BOTTOM";
+
     private final int[][] tiles;
+    private int[] zeroPosition;
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
@@ -81,9 +90,113 @@ public class Board {
     }
 
     // all neighboring boards
-//    public Iterable<Board> neighbors() {
-//
-//    }
+    public Iterable<Board> neighbors() {
+        int[] zeroPosition = getPositionOfZero();
+        String[] sides = this.getAllowedNeighbourSides();
+
+        return new Iterable<Board>() {
+            @Override
+            public Iterator<Board> iterator() {
+                return new Iterator<Board>() {
+                    private int current = 0;
+
+                    @Override
+                    public boolean hasNext() {
+                        return this.current < sides.length;
+                    }
+
+                    @Override
+                    public Board next() {
+                        int row = zeroPosition[0];
+                        int column = zeroPosition[1];
+                        int[][] newTiles = copy(tiles);
+
+                        int number;
+                        switch (sides[current]) {
+                            case TOP:
+                                number = newTiles[row - 1][column];
+                                newTiles[row - 1][column] = 0;
+                                break;
+                            case RIGHT:
+                                number = newTiles[row][column + 1];
+                                newTiles[row][column + 1] = 0;
+                                break;
+                            case BOTTOM:
+                                number = newTiles[row + 1][column];
+                                newTiles[row + 1][column] = 0;
+                                break;
+                            case LEFT:
+                                number = newTiles[row][column - 1];
+                                newTiles[row][column - 1] = 0;
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Side is not defined.");
+                        }
+
+                        newTiles[row][column] = number;
+                        current++;
+                        return new Board(newTiles);
+                    }
+                };
+            }
+        };
+    }
+
+    private String[] getAllowedNeighbourSides() {
+        int[] zeroPosition = this.getPositionOfZero();
+        int row = zeroPosition[0];
+        int column = zeroPosition[1];
+        ArrayList<String> sides = new ArrayList<>();
+
+        if (this.isWithinRange(row - 1)) {
+            sides.add(TOP);
+        }
+        if (this.isWithinRange(row + 1)) {
+            sides.add(BOTTOM);
+        }
+        if (this.isWithinRange(column - 1)) {
+            sides.add(LEFT);
+        }
+        if (this.isWithinRange(column + 1)) {
+            sides.add(RIGHT);
+        }
+        return sides.toArray(new String[0]);
+    }
+
+    private boolean isWithinRange(int number) {
+        return 0 <= number && number < this.tiles.length;
+    }
+
+    private int[] getPositionOfZero() {
+        if (this.zeroPosition != null) {
+            return this.zeroPosition;
+        }
+
+        int dimension = this.dimension();
+        for (int row = 0; row < dimension; row++) {
+            for (int column = 0; column < dimension; column++) {
+                if (this.tiles[row][column] == 0) {
+                    this.zeroPosition = new int[]{row, column};
+                    break;
+                }
+            }
+            if (this.zeroPosition != null) {
+                break;
+            }
+        }
+
+        return this.zeroPosition;
+    }
+
+    private int[][] copy(int[][] tiles) {
+        int[][] newTiles = new int[tiles.length][tiles.length];
+        for (int i = 0; i < tiles.length; i++) {
+            for (int j = 0; j < tiles.length; j++) {
+                newTiles[i][j] = tiles[i][j];
+            }
+        }
+        return newTiles;
+    }
 
     // a board that is obtained by exchanging any pair of tiles
 //    public Board twin() {
@@ -108,7 +221,7 @@ public class Board {
         for (int i = 0; i < n; i++) {
             test += "{";
             for (int j = 0; j < n; j++) {
-                int number = i * n + j +1;
+                int number = i * n + j + 1;
                 test += number + ", ";
             }
             test += "},\n";
