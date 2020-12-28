@@ -185,4 +185,60 @@ public class BoardNeighborsTest {
         assertEquals("3\n1 6 3 \n0 2 5 \n7 8 4 \n", boardIterator.next().toString());
         boardIterator.next();
     }
+
+    /**
+     * 1  6  3
+     * 2  0  5
+     * 7  8  4
+     */
+    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    public void testNeighbors11() {
+        Board board = new Board(new int[][]{
+                { 1,  2,  3,  4,  5,},
+                {16, 17, 18, 19, 20,},
+                {31, 32,  0, 34, 35,},
+                {46, 47, 48, 49, 50,},
+                {61, 62, 63, 64, 65,},
+        });
+
+        Iterator<Board> boardIterator = board.neighbors().iterator();
+
+        String expectedNeighbour =
+                "5" +
+                "\n1 2 3 4 5 \n" +
+                "16 17 0 19 20 \n" +
+                "31 32 18 34 35 \n" +
+                "46 47 48 49 50 \n" +
+                "61 62 63 64 65 \n";
+        assertEquals(expectedNeighbour, boardIterator.next().toString());
+
+        expectedNeighbour =
+                "5" +
+                "\n1 2 3 4 5 \n" +
+                "16 17 18 19 20 \n" +
+                "31 32 34 0 35 \n" +
+                "46 47 48 49 50 \n" +
+                "61 62 63 64 65 \n";
+        assertEquals(expectedNeighbour, boardIterator.next().toString());
+
+        expectedNeighbour =
+                "5" +
+                "\n1 2 3 4 5 \n" +
+                "16 17 18 19 20 \n" +
+                "31 32 48 34 35 \n" +
+                "46 47 0 49 50 \n" +
+                "61 62 63 64 65 \n";
+        assertEquals(expectedNeighbour, boardIterator.next().toString());
+
+        expectedNeighbour =
+                "5" +
+                "\n1 2 3 4 5 \n" +
+                "16 17 18 19 20 \n" +
+                "31 0 32 34 35 \n" +
+                "46 47 48 49 50 \n" +
+                "61 62 63 64 65 \n";
+        assertEquals(expectedNeighbour, boardIterator.next().toString());
+
+        boardIterator.next();
+    }
 }
