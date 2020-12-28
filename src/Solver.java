@@ -17,23 +17,41 @@ public class Solver {
         }
 
         Board board = initial;
-        while (!board.isGoal()) {
-            Iterable<Board> neighbors = board.neighbors();
-            MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
+        Board twinBoard = initial.twin();
 
-            for (Board neighbor : neighbors) {
+        while (true) {
+            MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
+            MinPQ<Board> twinMinPQ = new MinPQ<>(new BoardComparator());
+
+            for (Board neighbor : board.neighbors()) {
                 if (board.equals(neighbor)) {
                     continue;
                 }
                 minPQ.insert(neighbor);
             }
 
+            for (Board twinNeighbor : twinBoard.neighbors()) {
+                if (twinBoard.equals(twinNeighbor)) {
+                    continue;
+                }
+                twinMinPQ.insert(twinNeighbor);
+            }
+
             board = minPQ.delMin();
+            twinBoard = twinMinPQ.delMin();
+
             this.boardSequence.add(board);
             this.move++;
-        }
 
-        this.solvable = true;
+            if (board.isGoal()) {
+                this.solvable = true;
+                break;
+            }
+            if (twinBoard.isGoal()) {
+                this.solvable = false;
+                break;
+            }
+        }
     }
 
     // is the initial board solvable? (see below)
@@ -89,15 +107,7 @@ public class Solver {
     private class BoardComparator implements Comparator<Board> {
         @Override
         public int compare(Board o1, Board o2) {
-            if (manhattanPriority(o1) == manhattanPriority(o2)) {
-                return 0;
-            }
-
-            if (manhattanPriority(o1) < manhattanPriority(o2)) {
-                return -1;
-            }
-
-            return 1;
+            return Integer.compare(manhattanPriority(o1), manhattanPriority(o2));
         }
     }
 }

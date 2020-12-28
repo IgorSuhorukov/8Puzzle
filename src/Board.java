@@ -207,7 +207,36 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
-        return new Board(this.tiles);
+        int[] indexes = this.getRandomIndexArray();
+        int oldRow = indexes[0];
+        int oldColumn = indexes[1];
+        int oldNumber = this.tiles[oldRow][oldColumn];
+
+        int[][] newTiles = new int[this.tiles.length][this.tiles.length];
+        for (int i = 0; i < this.tiles.length; i++) {
+            for (int j = 0; j < this.tiles.length; j++) {
+                newTiles[i][j] = this.tiles[i][j];
+            }
+        }
+
+        int[] newIndexes = this.getRandomIndexArray();
+        int newRow = newIndexes[0];
+        int newColumn = newIndexes[1];
+        int newNumber = newTiles[newRow][newColumn];
+
+        newTiles[oldRow][oldColumn] = newNumber;
+        newTiles[newRow][newColumn] = oldNumber;
+
+        return new Board(newTiles);
+    }
+
+    private int[] getRandomIndexArray() {
+        int row = (int) (Math.random() * (this.tiles.length - 1));
+        int column = (int) (Math.random() * (this.tiles.length - 1));
+        if (this.tiles[row][column] == 0) {
+            return this.getRandomIndexArray();
+        }
+        return new int[]{row, column};
     }
 
     // unit testing (not graded)
