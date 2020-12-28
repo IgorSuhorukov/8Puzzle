@@ -12,6 +12,7 @@ public class Board {
     private int[] zeroPosition;
     private int tilesOutOfPlace = -1;
     private int distancesBetweenTilesAndGoal = -1;
+    private Board twinBoard;
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
@@ -94,7 +95,7 @@ public class Board {
 
     // does this board equal y?
     public boolean equals(Object y) {
-        if (y == null) return false;
+        if (!(y instanceof Board)) return false;
         return this.toString().equals(y.toString());
     }
 
@@ -213,6 +214,10 @@ public class Board {
 
     // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
+        if (this.twinBoard != null) {
+            return this.twinBoard;
+        }
+
         int[] indexes = this.getRandomIndexArray();
         int oldRow = indexes[0];
         int oldColumn = indexes[1];
@@ -233,7 +238,8 @@ public class Board {
         newTiles[oldRow][oldColumn] = newNumber;
         newTiles[newRow][newColumn] = oldNumber;
 
-        return new Board(newTiles);
+        this.twinBoard = new Board(newTiles);
+        return this.twinBoard;
     }
 
     private int[] getRandomIndexArray() {

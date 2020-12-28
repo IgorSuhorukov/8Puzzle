@@ -23,7 +23,7 @@ public class BoardNeighborsTest {
      * 4  5  6
      * 7  8  0
      */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testNeighbors2() {
         Board board = new Board(this.orderedBoardTwo);
 
@@ -38,7 +38,7 @@ public class BoardNeighborsTest {
      * 4  5  6
      * 0  8  7
      */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testNeighbors3() {
         Board board = new Board(new int[][]{
                 {1, 2, 3},
@@ -57,7 +57,7 @@ public class BoardNeighborsTest {
      * 4  5  6
      * 1  8  7
      */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testNeighbors4() {
         Board board = new Board(new int[][]{
                 {0, 2, 3},
@@ -76,7 +76,7 @@ public class BoardNeighborsTest {
      * 4  5  6
      * 1  8  7
      */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testNeighbors5() {
         Board board = new Board(new int[][]{{3, 2, 0}, {4, 5, 6}, {1, 8, 7}});
 
@@ -91,7 +91,7 @@ public class BoardNeighborsTest {
      * 4  5  6
      * 7  0  8
      */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testNeighbors6() {
         Board board = new Board(new int[][]{
                 {1, 2, 3},
@@ -111,7 +111,7 @@ public class BoardNeighborsTest {
      * 0  5  6
      * 7  8  4
      */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testNeighbors7() {
         Board board = new Board(new int[][]{
                 {1, 2, 3},
@@ -131,7 +131,7 @@ public class BoardNeighborsTest {
      * 2  5  6
      * 7  8  4
      */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testNeighbors8() {
         Board board = new Board(new int[][]{
                 {1, 0, 3},
@@ -151,7 +151,7 @@ public class BoardNeighborsTest {
      * 2  5  0
      * 7  8  4
      */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testNeighbors9() {
         Board board = new Board(new int[][]{
                 {1, 6, 3},
@@ -171,7 +171,7 @@ public class BoardNeighborsTest {
      * 2  0  5
      * 7  8  4
      */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testNeighbors10() {
         Board board = new Board(new int[][]{
                 {1, 6, 3},
