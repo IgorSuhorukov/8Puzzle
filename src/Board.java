@@ -9,6 +9,8 @@ public class Board {
 
     private final int[][] tiles;
     private int[] zeroPosition;
+    private int tilesOutOfPlace = -1;
+    private int distancesBetweenTilesAndGoal = -1;
 
     // create a board from an n-by-n array of tiles,
     // where tiles[row][col] = tile at (row, col)
@@ -40,26 +42,27 @@ public class Board {
 
     // number of tiles out of place
     public int hamming() {
-        int count = 0;
-        int tilesLength = this.tiles.length;
-
-        for (int i = 0; i < tilesLength; i++) {
-            int[] row = this.tiles[i];
-            int rowLength = row.length;
-
-            for (int j = 0; j < rowLength; j++) {
-                if (this.tiles[i][j] == (i * rowLength + j + 1) || this.tiles[i][j] == 0) {
-                    continue;
-                }
-                count++;
-            }
+        if (this.tilesOutOfPlace != -1) {
+            return this.tilesOutOfPlace;
         }
-        return count;
+
+        this.tilesOutOfPlace = 0;
+        this.setData();
+        return this.tilesOutOfPlace;
     }
 
     // sum of Manhattan distances between tiles and goal
     public int manhattan() {
-        int distance = 0;
+        if (this.distancesBetweenTilesAndGoal != -1) {
+            return this.distancesBetweenTilesAndGoal;
+        }
+
+        this.distancesBetweenTilesAndGoal = 0;
+        this.setData();
+        return this.distancesBetweenTilesAndGoal;
+    }
+
+    private void setData() {
         int tilesLength = this.tiles.length;
 
         for (int i = 0; i < tilesLength; i++) {
@@ -68,15 +71,19 @@ public class Board {
 
             for (int j = 0; j < rowLength; j++) {
                 int current = this.tiles[i][j];
-                if (current == (i * rowLength + j + 1) || current == 0) {
+                if (current == (i * rowLength + j + 1)) {
                     continue;
                 }
+                if (current == 0) {
+                    this.zeroPosition = new int[]{i, j};
+                    continue;
+                }
+                this.tilesOutOfPlace++;
                 int correctRow = (int) Math.ceil((double) current / tilesLength) - 1;
                 int correctColumn = current - correctRow * tilesLength - 1;
-                distance += Math.abs(i - correctRow) + Math.abs(j - correctColumn);
+                this.distancesBetweenTilesAndGoal += Math.abs(i - correctRow) + Math.abs(j - correctColumn);
             }
         }
-        return distance;
     }
 
     // is this board the goal board?
@@ -199,9 +206,9 @@ public class Board {
     }
 
     // a board that is obtained by exchanging any pair of tiles
-//    public Board twin() {
-//
-//    }
+    public Board twin() {
+        return new Board(this.tiles);
+    }
 
     // unit testing (not graded)
     public static void main(String[] args) {
@@ -214,18 +221,5 @@ public class Board {
         System.out.println("dimension should be: " + board.dimension());
 
         System.out.println("board are equal: " + board.equals(boardTwo));
-    }
-
-    private String generateStructureOfNItems(int n) {
-        String test = "";
-        for (int i = 0; i < n; i++) {
-            test += "{";
-            for (int j = 0; j < n; j++) {
-                int number = i * n + j + 1;
-                test += number + ", ";
-            }
-            test += "},\n";
-        }
-        return test;
     }
 }
