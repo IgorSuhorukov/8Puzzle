@@ -163,6 +163,5 @@ public class BoardManhattanTest {
             {211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 112,},
         });
         assertEquals(143, board.manhattan());
-        // 121 -> 84 -> 44 -> 148 -> 173 -> 200 = 48
     }
 }

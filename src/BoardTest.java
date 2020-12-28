@@ -105,22 +105,22 @@ public class BoardTest {
     public void testEquals() {
         Board boardOne = new Board(this.orderedBoardTwo);
         Board boardTwo = new Board(this.orderedBoardTwo);
-        assertTrue(boardOne.equals(boardTwo));
+        assertEquals(boardOne, boardTwo);
 
         boardOne = new Board(new int[][] {{1,2},{3,0}});
         boardTwo = new Board(new int[][] {{1,2},{3,0}});
-        assertTrue(boardOne.equals(boardTwo));
+        assertEquals(boardOne, boardTwo);
 
         boardOne = new Board(new int[][] {{2,1},{0,3}});
         boardTwo = new Board(new int[][] {{2,1},{0,3}});
-        assertTrue(boardOne.equals(boardTwo));
+        assertEquals(boardOne, boardTwo);
 
         boardOne = new Board(new int[][] {{2,1},{0,3}});
         boardTwo = new Board(new int[][] {{1,2},{3,0}});
-        assertFalse(boardOne.equals(boardTwo));
+        assertNotEquals(boardOne, boardTwo);
 
         boardOne = new Board(new int[][] {{2,1},{0,3}});
         boardTwo = new Board(new int[][] {{1,2},{3,0}});
-        assertFalse(boardOne.equals(boardTwo));
+        assertNotEquals(boardOne, boardTwo);
     }
 }

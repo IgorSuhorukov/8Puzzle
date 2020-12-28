@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 public class Board {
     private static final String LEFT = "LEFT";
@@ -19,20 +20,20 @@ public class Board {
             throw new IllegalArgumentException();
         }
 
-        this.tiles = tiles;
+        this.tiles = this.copy(tiles);
     }
 
     // string representation of this board
     public String toString() {
-        String tilesString = this.tiles.length + "\n";
+        StringBuilder tilesString = new StringBuilder(this.tiles.length + "\n");
 
         for (int[] row : this.tiles) {
             for (int number : row) {
-                tilesString += number + " ";
+                tilesString.append(number).append(" ");
             }
-            tilesString += "\n";
+            tilesString.append("\n");
         }
-        return tilesString;
+        return tilesString.toString();
     }
 
     // board dimension n
@@ -93,7 +94,8 @@ public class Board {
 
     // does this board equal y?
     public boolean equals(Object y) {
-        return this.dimension() == ((Board) y).dimension() && this.toString().equals(y.toString());
+        if (y == null) return false;
+        return this.toString().equals(y.toString());
     }
 
     // all neighboring boards
@@ -114,6 +116,10 @@ public class Board {
 
                     @Override
                     public Board next() {
+                        if (!hasNext()) {
+                            throw new NoSuchElementException();
+                        }
+
                         int row = zeroPosition[0];
                         int column = zeroPosition[1];
                         int[][] newTiles = copy(tiles);

@@ -1,6 +1,7 @@
 import org.junit.Test;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import static org.junit.Assert.assertEquals;
 
@@ -191,7 +192,7 @@ public class BoardNeighborsTest {
      * 2  0  5
      * 7  8  4
      */
-    @Test(expected = ArrayIndexOutOfBoundsException.class)
+    @Test(expected = NoSuchElementException.class)
     public void testNeighbors11() {
         Board board = new Board(new int[][]{
                 { 1,  2,  3,  4,  5,},
