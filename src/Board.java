@@ -92,8 +92,8 @@ public class Board {
     }
 
     // does this board equal y?
-    public boolean equals(Board y) {
-        return this.dimension() == y.dimension() && this.toString().equals(y.toString());
+    public boolean equals(Object y) {
+        return this.dimension() == ((Board) y).dimension() && this.toString().equals(y.toString());
     }
 
     // all neighboring boards
