@@ -100,14 +100,14 @@ public class Solver {
         }
     }
 
-    private int manhattanPriority(Board board) {
-        return board.manhattan() + this.moves();
-    }
-
     private class BoardComparator implements Comparator<Board> {
         @Override
         public int compare(Board o1, Board o2) {
             return Integer.compare(manhattanPriority(o1), manhattanPriority(o2));
+        }
+
+        private int manhattanPriority(Board board) {
+            return board.manhattan() + moves();
         }
     }
 }

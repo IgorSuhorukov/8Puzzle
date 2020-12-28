@@ -95,71 +95,28 @@ public class Board {
 
     // does this board equal y?
     public boolean equals(Object y) {
-        if (!(y instanceof Board)) return false;
-        return this.toString().equals(y.toString());
+        if (this == y) return true;
+        if (y == null) return false;
+        if (getClass() != y.getClass()) return false;
+
+        Board board = (Board) y;
+        return this.dimension() == board.dimension() &&
+                this.manhattan() == board.manhattan() &&
+                this.hamming() == board.hamming();
     }
 
     // all neighboring boards
     public Iterable<Board> neighbors() {
-        int[] zeroPosition = getPositionOfZero();
+        int[] positionOfZero = getPositionOfZero();
         String[] sides = this.getAllowedNeighbourSides();
 
-        return new Iterable<Board>() {
-            @Override
-            public Iterator<Board> iterator() {
-                return new Iterator<Board>() {
-                    private int current = 0;
-
-                    @Override
-                    public boolean hasNext() {
-                        return this.current < sides.length;
-                    }
-
-                    @Override
-                    public Board next() {
-                        if (!hasNext()) {
-                            throw new NoSuchElementException();
-                        }
-
-                        int row = zeroPosition[0];
-                        int column = zeroPosition[1];
-                        int[][] newTiles = copy(tiles);
-
-                        int number;
-                        switch (sides[current]) {
-                            case TOP:
-                                number = newTiles[row - 1][column];
-                                newTiles[row - 1][column] = 0;
-                                break;
-                            case RIGHT:
-                                number = newTiles[row][column + 1];
-                                newTiles[row][column + 1] = 0;
-                                break;
-                            case BOTTOM:
-                                number = newTiles[row + 1][column];
-                                newTiles[row + 1][column] = 0;
-                                break;
-                            case LEFT:
-                                number = newTiles[row][column - 1];
-                                newTiles[row][column - 1] = 0;
-                                break;
-                            default:
-                                throw new IllegalArgumentException("Side is not defined.");
-                        }
-
-                        newTiles[row][column] = number;
-                        current++;
-                        return new Board(newTiles);
-                    }
-                };
-            }
-        };
+        return new BoardIterable(positionOfZero, sides);
     }
 
     private String[] getAllowedNeighbourSides() {
-        int[] zeroPosition = this.getPositionOfZero();
-        int row = zeroPosition[0];
-        int column = zeroPosition[1];
+        int[] positionOfZero = this.getPositionOfZero();
+        int row = positionOfZero[0];
+        int column = positionOfZero[1];
         ArrayList<String> sides = new ArrayList<>();
 
         if (this.isWithinRange(row - 1)) {
@@ -218,37 +175,10 @@ public class Board {
             return this.twinBoard;
         }
 
-        int[] indexes = this.getRandomIndexArray();
-        int oldRow = indexes[0];
-        int oldColumn = indexes[1];
-        int oldNumber = this.tiles[oldRow][oldColumn];
-
-        int[][] newTiles = new int[this.tiles.length][this.tiles.length];
-        for (int i = 0; i < this.tiles.length; i++) {
-            for (int j = 0; j < this.tiles.length; j++) {
-                newTiles[i][j] = this.tiles[i][j];
-            }
-        }
-
-        int[] newIndexes = this.getRandomIndexArray();
-        int newRow = newIndexes[0];
-        int newColumn = newIndexes[1];
-        int newNumber = newTiles[newRow][newColumn];
-
-        newTiles[oldRow][oldColumn] = newNumber;
-        newTiles[newRow][newColumn] = oldNumber;
+        int[][] newTiles = this.copy(this.tiles);
 
         this.twinBoard = new Board(newTiles);
         return this.twinBoard;
-    }
-
-    private int[] getRandomIndexArray() {
-        int row = (int) (Math.random() * (this.tiles.length - 1));
-        int column = (int) (Math.random() * (this.tiles.length - 1));
-        if (this.tiles[row][column] == 0) {
-            return this.getRandomIndexArray();
-        }
-        return new int[]{row, column};
     }
 
     // unit testing (not graded)
@@ -262,5 +192,73 @@ public class Board {
         System.out.println("dimension should be: " + board.dimension());
 
         System.out.println("board are equal: " + board.equals(boardTwo));
+    }
+
+    private class BoardIterable implements Iterable<Board> {
+        private final int[] positionOfZero;
+        private final String[] sides;
+
+        BoardIterable(int[] positionOfZero, String[] sides) {
+            this.positionOfZero = positionOfZero;
+            this.sides = sides;
+        }
+
+        @Override
+        public Iterator<Board> iterator() {
+            return new BoardIterator(this.positionOfZero, this.sides);
+        }
+    }
+
+    private class BoardIterator implements Iterator<Board> {
+        private final int[] positionOfZero;
+        private final String[] sides;
+        private int current = 0;
+
+        BoardIterator(int[] positionOfZero, String[] sides) {
+            this.positionOfZero = positionOfZero;
+            this.sides = sides;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return this.current < sides.length;
+        }
+
+        @Override
+        public Board next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+
+            int row = positionOfZero[0];
+            int column = positionOfZero[1];
+            int[][] newTiles = copy(tiles);
+
+            int number;
+            switch (sides[current]) {
+                case TOP:
+                    number = newTiles[row - 1][column];
+                    newTiles[row - 1][column] = 0;
+                    break;
+                case RIGHT:
+                    number = newTiles[row][column + 1];
+                    newTiles[row][column + 1] = 0;
+                    break;
+                case BOTTOM:
+                    number = newTiles[row + 1][column];
+                    newTiles[row + 1][column] = 0;
+                    break;
+                case LEFT:
+                    number = newTiles[row][column - 1];
+                    newTiles[row][column - 1] = 0;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Side is not defined.");
+            }
+
+            newTiles[row][column] = number;
+            current++;
+            return new Board(newTiles);
+        }
     }
 }
