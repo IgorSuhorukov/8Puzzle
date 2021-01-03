@@ -16,31 +16,41 @@ public class Solver {
             throw new IllegalArgumentException();
         }
 
+        if (initial.isGoal()) {
+            this.solvable = true;
+            return;
+        }
+
         Board board = initial;
+        Board previousBoard = board;
         Board twinBoard = initial.twin();
+        Board previousTwinBoard = twinBoard;
+        this.boardSequence.add(board);
 
         while (true) {
             MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
             MinPQ<Board> twinMinPQ = new MinPQ<>(new BoardComparator());
 
             for (Board neighbor : board.neighbors()) {
-                if (board.equals(neighbor)) {
+                if (board.equals(neighbor) || previousBoard.equals(neighbor)) {
                     continue;
                 }
                 minPQ.insert(neighbor);
             }
 
             for (Board twinNeighbor : twinBoard.neighbors()) {
-                if (twinBoard.equals(twinNeighbor)) {
+                if (twinBoard.equals(twinNeighbor) || previousTwinBoard.equals(twinNeighbor)) {
                     continue;
                 }
                 twinMinPQ.insert(twinNeighbor);
             }
 
-            if (minPQ.size() > 1) {
+            if (minPQ.size() > 0) {
+                previousBoard = board;
                 board = minPQ.delMin();
             }
-            if (twinMinPQ.size() > 1) {
+            if (twinMinPQ.size() > 0) {
+                previousTwinBoard = twinBoard;
                 twinBoard = twinMinPQ.delMin();
             }
 

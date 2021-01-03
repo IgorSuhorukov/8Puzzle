@@ -10,8 +10,8 @@ public class Board {
 
     private final int[][] tiles;
     private int[] zeroPosition;
-    private int tilesOutOfPlace = -1;
-    private int distancesBetweenTilesAndGoal = -1;
+    private int tilesOutOfPlace = 0;
+    private int distancesBetweenTilesAndGoal = 0;
     private Board twinBoard;
 
     // create a board from an n-by-n array of tiles,
@@ -22,6 +22,7 @@ public class Board {
         }
 
         this.tiles = this.copy(tiles);
+        this.setData();
     }
 
     // string representation of this board
@@ -44,23 +45,11 @@ public class Board {
 
     // number of tiles out of place
     public int hamming() {
-        if (this.tilesOutOfPlace != -1) {
-            return this.tilesOutOfPlace;
-        }
-
-        this.tilesOutOfPlace = 0;
-        this.setData();
         return this.tilesOutOfPlace;
     }
 
     // sum of Manhattan distances between tiles and goal
     public int manhattan() {
-        if (this.distancesBetweenTilesAndGoal != -1) {
-            return this.distancesBetweenTilesAndGoal;
-        }
-
-        this.distancesBetweenTilesAndGoal = 0;
-        this.setData();
         return this.distancesBetweenTilesAndGoal;
     }
 
