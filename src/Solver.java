@@ -37,8 +37,12 @@ public class Solver {
                 twinMinPQ.insert(twinNeighbor);
             }
 
-            board = minPQ.delMin();
-            twinBoard = twinMinPQ.delMin();
+            if (minPQ.size() > 1) {
+                board = minPQ.delMin();
+            }
+            if (twinMinPQ.size() > 1) {
+                twinBoard = twinMinPQ.delMin();
+            }
 
             this.boardSequence.add(board);
             this.move++;

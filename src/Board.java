@@ -169,13 +169,33 @@ public class Board {
         return newTiles;
     }
 
-    // a board that is obtained by exchanging any pair of tiles
     public Board twin() {
         if (this.twinBoard != null) {
             return this.twinBoard;
         }
 
+        int oldRow = 0;
+        int oldColumn = 0;
+        int oldNumber = this.tiles[oldRow][oldColumn];
+
+        if (oldNumber == 0) {
+            oldColumn = oldColumn + 1;
+            oldNumber = this.tiles[oldRow][oldColumn];
+        }
+
         int[][] newTiles = this.copy(this.tiles);
+
+        int newRow = this.tiles.length - 1;
+        int newColumn = this.tiles.length - 1;
+        int newNumber = newTiles[newRow][newColumn];
+
+        if (newNumber == 0) {
+            newColumn = newColumn - 1;
+            newNumber = newTiles[newRow][newColumn];
+        }
+
+        newTiles[oldRow][oldColumn] = newNumber;
+        newTiles[newRow][newColumn] = oldNumber;
 
         this.twinBoard = new Board(newTiles);
         return this.twinBoard;
