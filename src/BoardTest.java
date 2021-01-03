@@ -88,39 +88,104 @@ public class BoardTest {
         board = new Board(this.orderedBoardFifteen);
         assertTrue(board.isGoal());
 
-        board = new Board(new int[][] {{1, 2}, {0, 3}});
+        board = new Board(new int[][]{{1, 2}, {0, 3}});
         assertFalse(board.isGoal());
 
-        board = new Board(new int[][] {{0, 2}, {3, 1}});
+        board = new Board(new int[][]{{0, 2}, {3, 1}});
         assertFalse(board.isGoal());
 
-        board = new Board(new int[][] {{0, 3}, {1, 2}});
+        board = new Board(new int[][]{{0, 3}, {1, 2}});
         assertFalse(board.isGoal());
 
-        board = new Board(new int[][] {{0, 1}, {2, 3}});
+        board = new Board(new int[][]{{0, 1}, {2, 3}});
         assertFalse(board.isGoal());
     }
 
     @Test
     public void testEquals() {
-        Board boardOne = new Board(this.orderedBoardTwo);
-        Board boardTwo = new Board(this.orderedBoardTwo);
+        this.testEquality(this.orderedBoardTwo, this.orderedBoardTwo);
+    }
+
+    @Test
+    public void testEquals1() {
+        this.testEquality(
+                new int[][]{{1, 2}, {3, 0}},
+                new int[][]{{1, 2}, {3, 0}}
+        );
+    }
+
+    @Test
+    public void testEquals2() {
+        this.testEquality(new int[][]{{2, 1}, {0, 3}},
+                new int[][]{{2, 1}, {0, 3}});
+    }
+
+    @Test
+    public void testEquals3() {
+
+        this.testNonEquality(new int[][]{{2, 1}, {0, 3}},
+                new int[][]{{1, 2}, {3, 0}});
+    }
+
+    @Test
+    public void testEquals4() {
+        this.testNonEquality(
+                new int[][]{{2, 1}, {0, 3}},
+                new int[][]{{1, 2}, {3, 0}}
+        );
+    }
+
+    @Test
+    public void testEquals5() {
+        this.testNonEquality(
+                new int[][]{{1, 0}, {2, 3}},
+                new int[][]{{2, 0}, {3, 1}}
+        );
+    }
+
+    @Test
+    public void testEquals6() {
+        this.testNonEquality(
+                new int[][]{
+                        {0, 3, 7},
+                        {5, 6, 4},
+                        {8, 1, 2},
+                },
+                new int[][]{
+                        {5, 1, 7},
+                        {3, 6, 2},
+                        {0, 4, 8,}
+                }
+        );
+    }
+
+    @Test
+    public void testEquals7() {
+        this.testNonEquality(
+                new int[][]{
+                        {3, 1, 8, 11},
+                        {7, 2, 10, 4},
+                        {0, 12, 14, 5},
+                        {15, 13, 9, 6},
+                },
+                new int[][]{
+                        {6, 14, 2, 15},
+                        {1, 0, 4, 12},
+                        {10, 3, 8, 7},
+                        {5, 11, 13, 9},
+                }
+        );
+    }
+
+    private void testEquality(int[][] tiles1, int[][] tiles2) {
+        Board boardOne = new Board(tiles1);
+        Board boardTwo = new Board(tiles2);
         assertEquals(boardOne, boardTwo);
+    }
 
-        boardOne = new Board(new int[][] {{1,2},{3,0}});
-        boardTwo = new Board(new int[][] {{1,2},{3,0}});
-        assertEquals(boardOne, boardTwo);
-
-        boardOne = new Board(new int[][] {{2,1},{0,3}});
-        boardTwo = new Board(new int[][] {{2,1},{0,3}});
-        assertEquals(boardOne, boardTwo);
-
-        boardOne = new Board(new int[][] {{2,1},{0,3}});
-        boardTwo = new Board(new int[][] {{1,2},{3,0}});
-        assertNotEquals(boardOne, boardTwo);
-
-        boardOne = new Board(new int[][] {{2,1},{0,3}});
-        boardTwo = new Board(new int[][] {{1,2},{3,0}});
+    private void testNonEquality(int[][] tiles1, int[][] tiles2) {
+        Board boardOne = new Board(tiles1);
+        Board boardTwo = new Board(tiles2);
         assertNotEquals(boardOne, boardTwo);
     }
 }

@@ -94,15 +94,26 @@ public class Board {
     }
 
     // does this board equal y?
-    public boolean equals(Object y) {
+        public boolean equals(Object y) {
         if (this == y) return true;
         if (y == null) return false;
         if (getClass() != y.getClass()) return false;
 
         Board board = (Board) y;
-        return this.dimension() == board.dimension() &&
-                this.manhattan() == board.manhattan() &&
-                this.hamming() == board.hamming();
+        if (this.dimension() != board.dimension() ||
+                this.manhattan() != board.manhattan() ||
+                this.hamming() != board.hamming()) {
+            return false;
+        }
+        for (int i = 0; i < this.tiles.length; i++) {
+            for (int j = 0; j < this.tiles.length; j++) {
+                if (this.tiles[i][j] != ((Board) y).tiles[i][j]) {
+                    return false;
+                }
+            }
+
+        }
+        return true;
     }
 
     // all neighboring boards
