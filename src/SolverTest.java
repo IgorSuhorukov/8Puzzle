@@ -60,11 +60,39 @@ public class SolverTest {
     }
 
     @Test()
-    public void testMoves3() {
+    public void testMoves2() {
+        Board board = new Board(new int[][]{
+                {1, 2, 3},
+                {0, 7, 6},
+                {5, 4, 8},
+        });
+        Solver solver = new Solver(board);
+        assertEquals(133, solver.moves());
+    }
+
+    @Test()
+    public void testSolution() {
         Board board = new Board(new int[][]{{1, 0}, {3, 2}});
         Board expectedBoard = new Board(new int[][]{{1, 0}, {3, 2}});
 
         Solver solver = new Solver(board);
         assertEquals(expectedBoard, solver.solution().iterator().next());
+    }
+
+    @Test()
+    public void testSolution2() {
+        Board board = new Board(new int[][]{
+                {1, 2, 3},
+                {0, 7, 6},
+                {5, 4, 8},
+        });
+        Board expectedFirstBoard = new Board(new int[][]{
+                {1, 2, 3},
+                {0, 7, 6},
+                {5, 4, 8},
+        });
+
+        Solver solver = new Solver(board);
+        assertEquals(expectedFirstBoard, solver.solution().iterator().next());
     }
 }

@@ -9,6 +9,7 @@ public class Solver {
     private boolean solvable = false;
     private int move = 0;
     private final ArrayList<Board> boardSequence = new ArrayList<>();
+    private final ArrayList<Board> twinBoardSequence = new ArrayList<>();
 
     // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initial) {
@@ -22,35 +23,33 @@ public class Solver {
         }
 
         Board board = initial;
-        Board previousBoard = board;
         Board twinBoard = initial.twin();
-        Board previousTwinBoard = twinBoard;
+
         this.boardSequence.add(board);
+        this.twinBoardSequence.add(twinBoard);
 
         while (true) {
             MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
             MinPQ<Board> twinMinPQ = new MinPQ<>(new BoardComparator());
 
             for (Board neighbor : board.neighbors()) {
-                if (board.equals(neighbor) || previousBoard.equals(neighbor)) {
+                if (this.boardSequence.contains(neighbor)) {
                     continue;
                 }
                 minPQ.insert(neighbor);
             }
 
             for (Board twinNeighbor : twinBoard.neighbors()) {
-                if (twinBoard.equals(twinNeighbor) || previousTwinBoard.equals(twinNeighbor)) {
+                if (twinBoardSequence.contains(twinNeighbor)) {
                     continue;
                 }
                 twinMinPQ.insert(twinNeighbor);
             }
 
             if (minPQ.size() > 0) {
-                previousBoard = board;
                 board = minPQ.delMin();
             }
             if (twinMinPQ.size() > 0) {
-                previousTwinBoard = twinBoard;
                 twinBoard = twinMinPQ.delMin();
             }
 
