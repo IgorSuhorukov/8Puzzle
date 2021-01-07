@@ -67,7 +67,18 @@ public class SolverTest {
                 {5, 4, 8},
         });
         Solver solver = new Solver(board);
-        assertEquals(133, solver.moves());
+        assertEquals(7, solver.moves());
+    }
+
+    @Test()
+    public void testMoves3() {
+        Board board = new Board(new int[][]{
+                {2, 3, 5},
+                {1, 0, 4},
+                {7, 8, 6},
+        });
+        Solver solver = new Solver(board);
+        assertEquals(8, solver.moves());
     }
 
     @Test()
@@ -94,5 +105,21 @@ public class SolverTest {
 
         Solver solver = new Solver(board);
         assertEquals(expectedFirstBoard, solver.solution().iterator().next());
+    }
+
+    @Test()
+    public void testSolution3() {
+        Board board = new Board(new int[][]{
+                {1, 2, 3},
+                {0, 7, 6},
+                {5, 4, 8},
+        });
+
+        Solver solver = new Solver(board);
+        int amount = 0;
+        for (Board solution : solver.solution()) {
+            amount++;
+        }
+        assertEquals(8, amount);
     }
 }

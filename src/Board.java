@@ -83,7 +83,7 @@ public class Board {
     }
 
     // does this board equal y?
-        public boolean equals(Object y) {
+    public boolean equals(Object y) {
         if (this == y) return true;
         if (y == null) return false;
         if (getClass() != y.getClass()) return false;

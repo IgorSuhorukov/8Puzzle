@@ -8,61 +8,37 @@ import java.util.Comparator;
 public class Solver {
     private boolean solvable = false;
     private int move = 0;
-    private final ArrayList<Board> boardSequence = new ArrayList<>();
-    private final ArrayList<Board> twinBoardSequence = new ArrayList<>();
+    private final MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
 
     // find a solution to the initial board (using the A* algorithm)
-    public Solver(Board initial) {
-        if (initial == null) {
+    public Solver(Board initialBoard) {
+        if (initialBoard == null) {
             throw new IllegalArgumentException();
         }
 
-        if (initial.isGoal()) {
+        if (initialBoard.isGoal()) {
             this.solvable = true;
             return;
         }
 
-        Board board = initial;
-        Board twinBoard = initial.twin();
+        this.minPQ.insert(initialBoard);
 
-        this.boardSequence.add(board);
-        this.twinBoardSequence.add(twinBoard);
+        for (Board neighbour : initialBoard.neighbors()) {
+            this.minPQ.insert(neighbour);
+        }
 
         while (true) {
-            MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
-            MinPQ<Board> twinMinPQ = new MinPQ<>(new BoardComparator());
+            Board minBoard = minPQ.delMin();
 
-            for (Board neighbor : board.neighbors()) {
-                if (this.boardSequence.contains(neighbor)) {
-                    continue;
-                }
-                minPQ.insert(neighbor);
-            }
-
-            for (Board twinNeighbor : twinBoard.neighbors()) {
-                if (twinBoardSequence.contains(twinNeighbor)) {
-                    continue;
-                }
-                twinMinPQ.insert(twinNeighbor);
-            }
-
-            if (minPQ.size() > 0) {
-                board = minPQ.delMin();
-            }
-            if (twinMinPQ.size() > 0) {
-                twinBoard = twinMinPQ.delMin();
-            }
-
-            this.boardSequence.add(board);
             this.move++;
 
-            if (board.isGoal()) {
+            if (minBoard.isGoal()) {
                 this.solvable = true;
-                break;
+                return;
             }
-            if (twinBoard.isGoal()) {
-                this.solvable = false;
-                break;
+
+            for (Board neighbour : minBoard.neighbors()) {
+                this.minPQ.insert(neighbour);
             }
         }
     }
@@ -86,7 +62,7 @@ public class Solver {
             return null;
         }
 
-        return this.boardSequence;
+        return this.minPQ;
     }
 
     // test client (see below)
