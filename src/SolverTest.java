@@ -82,6 +82,30 @@ public class SolverTest {
     }
 
     @Test()
+    public void testMoves4() {
+        Board board = new Board(new int[][]{
+                {1, 0, 2},
+                {7, 5, 4},
+                {8, 6, 3},
+        });
+        Solver solver = new Solver(board);
+        assertEquals(11, solver.moves());
+    }
+
+    @Test()
+    public void testMoves5() {
+        Board board = new Board(new int[][]{
+                {1, 2, 3, 4, 5},
+                {12, 6, 8, 9, 10},
+                {0, 7, 13, 19, 14},
+                {11, 16, 17, 18, 15},
+                {21, 22, 23, 24, 20},
+        });
+        Solver solver = new Solver(board);
+        assertEquals(12, solver.moves());
+    }
+
+    @Test()
     public void testSolution() {
         Board board = new Board(new int[][]{{1, 0}, {3, 2}});
         Board expectedBoard = new Board(new int[][]{{1, 0}, {3, 2}});

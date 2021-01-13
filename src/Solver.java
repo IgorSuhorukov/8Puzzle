@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Solver {
-    private boolean solvable = false;
+    private boolean solvable = true;
     private int move = 0;
-    private final MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
+    private int minimalMoves = 0;
+    private final ArrayList<Board> boardSequence = new ArrayList<>();
 
-    // find a solution to the initial board (using the A* algorithm)
     public Solver(Board initialBoard) {
         if (initialBoard == null) {
             throw new IllegalArgumentException();
@@ -21,25 +21,31 @@ public class Solver {
             return;
         }
 
-        this.minPQ.insert(initialBoard);
+        this.minimalMoves = initialBoard.manhattan();
 
-        for (Board neighbour : initialBoard.neighbors()) {
-            this.minPQ.insert(neighbour);
-        }
+        Board searchNode = initialBoard;
+        Board previousSearchNode = null;
+
+        MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
+        minPQ.insert(searchNode);
+        searchNode = minPQ.delMin();
 
         while (true) {
-            Board minBoard = minPQ.delMin();
-
-            this.move++;
-
-            if (minBoard.isGoal()) {
-                this.solvable = true;
+            if (searchNode.isGoal()) {
                 return;
             }
 
-            for (Board neighbour : minBoard.neighbors()) {
-                this.minPQ.insert(neighbour);
+            for (Board neighbour : searchNode.neighbors()) {
+                if (neighbour.equals(previousSearchNode) || this.boardSequence.contains(neighbour)) {
+                    continue;
+                }
+                minPQ.insert(neighbour);
             }
+
+            previousSearchNode = searchNode;
+            this.boardSequence.add(searchNode);
+            this.move++;
+            searchNode = minPQ.delMin();
         }
     }
 
@@ -53,7 +59,7 @@ public class Solver {
         if (!this.isSolvable()) {
             return -1;
         }
-        return this.move;
+        return this.minimalMoves;
     }
 
     // sequence of boards in a shortest solution; null if unsolvable
@@ -62,7 +68,7 @@ public class Solver {
             return null;
         }
 
-        return this.minPQ;
+        return this.boardSequence;
     }
 
     // test client (see below)
@@ -96,7 +102,7 @@ public class Solver {
         }
 
         private int manhattanPriority(Board board) {
-            return board.manhattan() + moves();
+            return board.manhattan() + move;
         }
     }
 }

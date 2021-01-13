@@ -79,7 +79,7 @@ public class Board {
 
     // is this board the goal board?
     public boolean isGoal() {
-        return this.hamming() == 0;
+        return this.manhattan() == 0;
     }
 
     // does this board equal y?
@@ -159,11 +159,11 @@ public class Board {
         return this.zeroPosition;
     }
 
-    private int[][] copy(int[][] tiles) {
-        int[][] newTiles = new int[tiles.length][tiles.length];
-        for (int i = 0; i < tiles.length; i++) {
-            for (int j = 0; j < tiles.length; j++) {
-                newTiles[i][j] = tiles[i][j];
+    private int[][] copy(int[][] originalTiles) {
+        int[][] newTiles = new int[originalTiles.length][originalTiles.length];
+        for (int i = 0; i < originalTiles.length; i++) {
+            for (int j = 0; j < originalTiles.length; j++) {
+                newTiles[i][j] = originalTiles[i][j];
             }
         }
         return newTiles;

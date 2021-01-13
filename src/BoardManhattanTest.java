@@ -164,4 +164,17 @@ public class BoardManhattanTest {
         });
         assertEquals(143, board.manhattan());
     }
+
+    @Test
+    public void testManhattan13() {
+        Board board = new Board(new int[][]{
+                {3, 1, 2},
+                {7, 8, 0},
+                {5, 6, 4},
+        });
+        // 1,  2,  3,  4,  5,  6,  7,  8
+        // 1 + 1 + 2 + 3 + 2 + 2 + 1 + 1 = 13
+
+        assertEquals(13, board.manhattan());
+    }
 }
