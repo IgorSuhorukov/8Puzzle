@@ -116,6 +116,19 @@ public class SolverTest {
 
     @Test()
     public void testSolution2() {
+        Board board = new Board(new int[][]{{1, 0}, {3, 2}});
+        Board expectedBoard = new Board(new int[][]{{1, 2}, {3, 0}});
+
+        Solver solver = new Solver(board);
+        Board lastSolution = null;
+        for (Board solution : solver.solution()) {
+            lastSolution = solution;
+        }
+        assertEquals(expectedBoard, lastSolution);
+    }
+
+    @Test()
+    public void testSolution3() {
         Board board = new Board(new int[][]{
                 {1, 2, 3},
                 {0, 7, 6},
@@ -132,7 +145,7 @@ public class SolverTest {
     }
 
     @Test()
-    public void testSolution3() {
+    public void testSolution4() {
         Board board = new Board(new int[][]{
                 {1, 2, 3},
                 {0, 7, 6},

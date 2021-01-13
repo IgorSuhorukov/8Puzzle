@@ -32,6 +32,7 @@ public class Solver {
 
         while (true) {
             if (searchNode.isGoal()) {
+                this.boardSequence.add(searchNode);
                 return;
             }
 
