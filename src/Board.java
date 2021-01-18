@@ -1,6 +1,4 @@
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
 
 public class Board {
     private static final String LEFT = "LEFT";
@@ -9,6 +7,7 @@ public class Board {
     private static final String BOTTOM = "BOTTOM";
 
     private final int[][] tiles;
+    public int numMoves = 0;
     private int[] zeroPosition;
     private int tilesOutOfPlace = 0;
     private int distancesBetweenTilesAndGoal = 0;
@@ -21,6 +20,16 @@ public class Board {
             throw new IllegalArgumentException();
         }
 
+        this.tiles = this.copy(tiles);
+        this.setData();
+    }
+
+    private Board(int[][] tiles, int newMoves) {
+        if (tiles.length < 2) {
+            throw new IllegalArgumentException();
+        }
+
+        this.numMoves = newMoves;
         this.tiles = this.copy(tiles);
         this.setData();
     }
@@ -107,10 +116,45 @@ public class Board {
 
     // all neighboring boards
     public Iterable<Board> neighbors() {
+        ArrayList<Board> boardList = new ArrayList<>();
         int[] positionOfZero = getPositionOfZero();
+        int row = positionOfZero[0];
+        int column = positionOfZero[1];
         String[] sides = this.getAllowedNeighbourSides();
+        int current = 0;
 
-        return new BoardIterable(positionOfZero, sides);
+        for (String side : sides) {
+            int[][] newTiles = copy(this.tiles);
+            int number;
+            switch (side) {
+                case TOP:
+                    number = newTiles[row - 1][column];
+                    newTiles[row - 1][column] = 0;
+                    break;
+                case RIGHT:
+                    number = newTiles[row][column + 1];
+                    newTiles[row][column + 1] = 0;
+                    break;
+                case BOTTOM:
+                    number = newTiles[row + 1][column];
+                    newTiles[row + 1][column] = 0;
+                    break;
+                case LEFT:
+                    number = newTiles[row][column - 1];
+                    newTiles[row][column - 1] = 0;
+                    break;
+                default:
+                    throw new IllegalArgumentException("Side is not defined.");
+            }
+
+            newTiles[row][column] = number;
+            Board newBoard = new Board(newTiles, this.numMoves + 1);
+
+            current++;
+            boardList.add(newBoard);
+        }
+
+        return boardList;
     }
 
     private String[] getAllowedNeighbourSides() {
@@ -212,73 +256,5 @@ public class Board {
         System.out.println("dimension should be: " + board.dimension());
 
         System.out.println("board are equal: " + board.equals(boardTwo));
-    }
-
-    private class BoardIterable implements Iterable<Board> {
-        private final int[] positionOfZero;
-        private final String[] sides;
-
-        BoardIterable(int[] positionOfZero, String[] sides) {
-            this.positionOfZero = positionOfZero;
-            this.sides = sides;
-        }
-
-        @Override
-        public Iterator<Board> iterator() {
-            return new BoardIterator(this.positionOfZero, this.sides);
-        }
-    }
-
-    private class BoardIterator implements Iterator<Board> {
-        private final int[] positionOfZero;
-        private final String[] sides;
-        private int current = 0;
-
-        BoardIterator(int[] positionOfZero, String[] sides) {
-            this.positionOfZero = positionOfZero;
-            this.sides = sides;
-        }
-
-        @Override
-        public boolean hasNext() {
-            return this.current < sides.length;
-        }
-
-        @Override
-        public Board next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-
-            int row = positionOfZero[0];
-            int column = positionOfZero[1];
-            int[][] newTiles = copy(tiles);
-
-            int number;
-            switch (sides[current]) {
-                case TOP:
-                    number = newTiles[row - 1][column];
-                    newTiles[row - 1][column] = 0;
-                    break;
-                case RIGHT:
-                    number = newTiles[row][column + 1];
-                    newTiles[row][column + 1] = 0;
-                    break;
-                case BOTTOM:
-                    number = newTiles[row + 1][column];
-                    newTiles[row + 1][column] = 0;
-                    break;
-                case LEFT:
-                    number = newTiles[row][column - 1];
-                    newTiles[row][column - 1] = 0;
-                    break;
-                default:
-                    throw new IllegalArgumentException("Side is not defined.");
-            }
-
-            newTiles[row][column] = number;
-            current++;
-            return new Board(newTiles);
-        }
     }
 }

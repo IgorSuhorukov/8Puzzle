@@ -24,29 +24,20 @@ public class Solver {
         this.minimalMoves = initialBoard.manhattan();
 
         Board searchNode = initialBoard;
-        Board previousSearchNode = null;
-
         MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
-        minPQ.insert(searchNode);
-        searchNode = minPQ.delMin();
+        minPQ.insert(initialBoard);
 
-        while (true) {
-            if (searchNode.isGoal()) {
-                this.boardSequence.add(searchNode);
-                return;
-            }
+        while (!searchNode.isGoal() && minPQ.size() > 0) {
+            searchNode = minPQ.delMin();
+            this.boardSequence.add(searchNode);
+            this.move++;
 
             for (Board neighbour : searchNode.neighbors()) {
-                if (neighbour.equals(previousSearchNode) || this.boardSequence.contains(neighbour)) {
+                if (this.boardSequence.contains(neighbour)) {
                     continue;
                 }
                 minPQ.insert(neighbour);
             }
-
-            previousSearchNode = searchNode;
-            this.boardSequence.add(searchNode);
-            this.move++;
-            searchNode = minPQ.delMin();
         }
     }
 
@@ -99,7 +90,7 @@ public class Solver {
     private class BoardComparator implements Comparator<Board> {
         @Override
         public int compare(Board o1, Board o2) {
-            return Integer.compare(manhattanPriority(o1), manhattanPriority(o2));
+            return (o1.manhattan() + o1.numMoves) - (o2.manhattan() + o2.numMoves);
         }
 
         private int manhattanPriority(Board board) {
