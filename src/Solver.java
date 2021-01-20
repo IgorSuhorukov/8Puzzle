@@ -36,12 +36,12 @@ public class Solver {
         twinBoardSequence.add(twinSearchNode);
 
         while (true) {
-            if (!searchNode.isGoal() && minPQ.size() > 0) {
+            if (searchNode.isGoal()) {
                 this.solvable = true;
                 return;
             }
 
-            if (!twinSearchNode.isGoal() && twinMinPQ.size() > 0) {
+            if (twinSearchNode.isGoal() || minPQ.size() < 1) {
                 this.solvable = false;
                 return;
             }
