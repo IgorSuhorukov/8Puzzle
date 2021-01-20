@@ -3,9 +3,9 @@ import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.StdOut;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 
 public class Solver {
+    private int move = 0;
     private boolean solvable;
     private int minimalMoves = 0;
     private final ArrayList<Board> boardSequence = new ArrayList<>();
@@ -23,25 +23,22 @@ public class Solver {
         ArrayList<Board> twinBoardSequence = new ArrayList<>();
         this.minimalMoves = initialBoard.manhattan();
 
-        Board searchNode = initialBoard;
-        Board twinSearchNode = initialBoard.twin();
+        Node searchNode = new Node(initialBoard, 0, null);
+        Node twinSearchNode = new Node(initialBoard.twin(), 0, null);
 
-        MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
-        MinPQ<Board> twinMinPQ = new MinPQ<>(new BoardComparator());
+        MinPQ<Node> minPQ = new MinPQ<>();
+        MinPQ<Node> twinMinPQ = new MinPQ<>();
 
-        minPQ.insert(initialBoard);
-        twinMinPQ.insert(initialBoard.twin());
-
-        this.boardSequence.add(searchNode);
-        twinBoardSequence.add(twinSearchNode);
+        minPQ.insert(searchNode);
+        twinMinPQ.insert(twinSearchNode);
 
         while (true) {
-            if (searchNode.isGoal()) {
+            if (searchNode.getBoard().isGoal()) {
                 this.solvable = true;
                 return;
             }
 
-            if (twinSearchNode.isGoal() || minPQ.size() < 1) {
+            if (twinSearchNode.getBoard().isGoal()) {
                 this.solvable = false;
                 return;
             }
@@ -49,22 +46,24 @@ public class Solver {
             searchNode = minPQ.delMin();
             twinSearchNode = twinMinPQ.delMin();
 
-            this.boardSequence.add(searchNode);
-            twinBoardSequence.add(twinSearchNode);
+            this.boardSequence.add(searchNode.getBoard());
+            twinBoardSequence.add(twinSearchNode.getBoard());
 
-            for (Board neighbour : searchNode.neighbors()) {
+            for (Board neighbour : searchNode.getBoard().neighbors()) {
                 if (this.boardSequence.contains(neighbour)) {
                     continue;
                 }
-                minPQ.insert(neighbour);
+                minPQ.insert(new Node(neighbour, searchNode.getMoves() + 1, searchNode));
             }
 
-            for (Board twinNeighbour : twinSearchNode.neighbors()) {
+            for (Board twinNeighbour : twinSearchNode.getBoard().neighbors()) {
                 if (twinBoardSequence.contains(twinNeighbour)) {
                     continue;
                 }
-                twinMinPQ.insert(twinNeighbour);
+                twinMinPQ.insert(new Node(twinNeighbour, twinSearchNode.getMoves() + 1, twinSearchNode));
             }
+
+            this.move++;
         }
     }
 
@@ -114,10 +113,39 @@ public class Solver {
         }
     }
 
-    private class BoardComparator implements Comparator<Board> {
+    private class Node implements Comparable<Node> {
+        private final Board board;
+        private final int moves;
+        private final int manPriority;
+        private final Node prevNode;
+
+        public Node(Board board, int moves, Node prevNode) {
+            this.board = board;
+            this.moves = moves;
+            this.manPriority = board.manhattan() + moves;
+            this.prevNode = prevNode;
+        }
+
+        public Node getPrevNode() {
+            return prevNode;
+        }
+
+        public int getManPriority() {
+            return manPriority;
+        }
+
+        public int getMoves() {
+            return moves;
+        }
+
+        public Board getBoard() {
+            return board;
+        }
+
         @Override
-        public int compare(Board o1, Board o2) {
-            return o1.manhattan() - o2.manhattan();
+        public int compareTo(Node o) {
+            return this.getManPriority() - o.getManPriority();
         }
     }
+
 }
