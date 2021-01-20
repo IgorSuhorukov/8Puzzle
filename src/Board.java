@@ -7,7 +7,7 @@ public class Board {
     private static final String BOTTOM = "BOTTOM";
 
     private final int[][] tiles;
-    public int numMoves = 0;
+    private int moveNumber = 0;
     private int[] zeroPosition;
     private int tilesOutOfPlace = 0;
     private int distancesBetweenTilesAndGoal = 0;
@@ -24,12 +24,12 @@ public class Board {
         this.setData();
     }
 
-    private Board(int[][] tiles, int newMoves) {
+    private Board(int[][] tiles, int moveNum) {
         if (tiles.length < 2) {
             throw new IllegalArgumentException();
         }
 
-        this.numMoves = newMoves;
+        this.moveNumber = moveNum;
         this.tiles = this.copy(tiles);
         this.setData();
     }
@@ -88,7 +88,7 @@ public class Board {
 
     // is this board the goal board?
     public boolean isGoal() {
-        return this.manhattan() == 0;
+        return this.hamming() == 0;
     }
 
     // does this board equal y?
@@ -121,7 +121,6 @@ public class Board {
         int row = positionOfZero[0];
         int column = positionOfZero[1];
         String[] sides = this.getAllowedNeighbourSides();
-        int current = 0;
 
         for (String side : sides) {
             int[][] newTiles = copy(this.tiles);
@@ -148,9 +147,8 @@ public class Board {
             }
 
             newTiles[row][column] = number;
-            Board newBoard = new Board(newTiles, this.numMoves + 1);
+            Board newBoard = new Board(newTiles, this.moveNumber + 1);
 
-            current++;
             boardList.add(newBoard);
         }
 

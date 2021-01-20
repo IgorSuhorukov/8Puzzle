@@ -6,8 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Solver {
-    private boolean solvable = true;
-    private int move = 0;
+    private boolean solvable;
     private int minimalMoves = 0;
     private final ArrayList<Board> boardSequence = new ArrayList<>();
 
@@ -21,22 +20,50 @@ public class Solver {
             return;
         }
 
+        ArrayList<Board> twinBoardSequence = new ArrayList<>();
         this.minimalMoves = initialBoard.manhattan();
 
         Board searchNode = initialBoard;
-        MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
-        minPQ.insert(initialBoard);
+        Board twinSearchNode = initialBoard.twin();
 
-        while (!searchNode.isGoal() && minPQ.size() > 0) {
+        MinPQ<Board> minPQ = new MinPQ<>(new BoardComparator());
+        MinPQ<Board> twinMinPQ = new MinPQ<>(new BoardComparator());
+
+        minPQ.insert(initialBoard);
+        twinMinPQ.insert(initialBoard.twin());
+
+        this.boardSequence.add(searchNode);
+        twinBoardSequence.add(twinSearchNode);
+
+        while (true) {
+            if (!searchNode.isGoal() && minPQ.size() > 0) {
+                this.solvable = true;
+                return;
+            }
+
+            if (!twinSearchNode.isGoal() && twinMinPQ.size() > 0) {
+                this.solvable = false;
+                return;
+            }
+
             searchNode = minPQ.delMin();
+            twinSearchNode = twinMinPQ.delMin();
+
             this.boardSequence.add(searchNode);
-            this.move++;
+            twinBoardSequence.add(twinSearchNode);
 
             for (Board neighbour : searchNode.neighbors()) {
                 if (this.boardSequence.contains(neighbour)) {
                     continue;
                 }
                 minPQ.insert(neighbour);
+            }
+
+            for (Board twinNeighbour : twinSearchNode.neighbors()) {
+                if (twinBoardSequence.contains(twinNeighbour)) {
+                    continue;
+                }
+                twinMinPQ.insert(twinNeighbour);
             }
         }
     }
@@ -90,11 +117,7 @@ public class Solver {
     private class BoardComparator implements Comparator<Board> {
         @Override
         public int compare(Board o1, Board o2) {
-            return (o1.manhattan() + o1.numMoves) - (o2.manhattan() + o2.numMoves);
-        }
-
-        private int manhattanPriority(Board board) {
-            return board.manhattan() + move;
+            return o1.manhattan() - o2.manhattan();
         }
     }
 }
